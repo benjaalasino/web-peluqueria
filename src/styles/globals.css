@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@import "@fontsource/bebas-neue";
+@import "@fontsource-variable/inter";
+
+@theme {
+  --color-ink: #060606;
+  --color-ink-soft: #0f0e0d;
+  --color-ink-raised: #17140f;
+  --color-bone: #f3ede1;
+  --color-bone-dim: #cfc6b3;
+  --color-gold: #cda434;
+  --color-gold-bright: #e8c968;
+  --color-copper: #b26a3f;
+  --color-copper-dim: #7a4a2e;
+
+  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
+  --font-body: "InterVariable", "Inter", system-ui, sans-serif;
+
+  --animate-shine: shine 2.6s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@layer base {
+  html {
+    background-color: var(--color-ink);
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-ink text-bone font-body antialiased;
+  }
+
+  ::selection {
+    @apply bg-gold/30 text-bone;
+  }
+}
