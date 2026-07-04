@@ -1,15 +1,24 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { saveBooking, type BookingRecord } from '@/data/availability'
 
 export interface ContactInfo {
   name: string
   phone: string
-  email?: string
-  notes?: string
+  email: string
+  notes: string
 }
 
-export const STEP_COUNT = 6
+export interface BookingRecord {
+  serviceId: string
+  barberId: string
+  date: string
+  time: string
+  contact: ContactInfo
+  createdAt: string
+}
+
+const STEP_COUNT = 6
+const BOOKINGS_KEY = 'peluqueria-bookings'
 
 interface BookingState {
   step: number
@@ -19,48 +28,42 @@ interface BookingState {
   date?: string
   time?: string
   contact: ContactInfo
-  lastConfirmed?: BookingRecord
-  setService: (id: string) => void
-  setBarber: (id: string) => void
-  setDate: (iso: string) => void
-  setTime: (time: string) => void
-  setContact: (contact: ContactInfo) => void
+  confirmedRecord?: BookingRecord
   next: () => void
   back: () => void
   goTo: (step: number) => void
-  reset: () => void
+  setService: (serviceId: string) => void
+  setBarber: (barberId: string) => void
+  setDate: (date: string) => void
+  setTime: (time: string) => void
+  setContact: (contact: Partial<ContactInfo>) => void
   submit: () => BookingRecord
+  reset: () => void
 }
 
-const initialDraft = {
-  step: 0,
-  direction: 1 as const,
-  serviceId: undefined,
-  barberId: undefined,
-  date: undefined,
-  time: undefined,
-  contact: { name: '', phone: '', email: '', notes: '' },
-  lastConfirmed: undefined,
-}
+const emptyContact: ContactInfo = { name: '', phone: '', email: '', notes: '' }
 
 export const useBookingStore = create<BookingState>()(
   persist(
     (set, get) => ({
-      ...initialDraft,
-      setService: (id) => set({ serviceId: id }),
-      setBarber: (id) => set({ barberId: id, date: undefined, time: undefined }),
-      setDate: (iso) => set({ date: iso, time: undefined }),
-      setTime: (time) => set({ time }),
-      setContact: (contact) => set({ contact }),
+      step: 0,
+      direction: 1,
+      contact: emptyContact,
+
       next: () => set((s) => ({ step: Math.min(s.step + 1, STEP_COUNT - 1), direction: 1 })),
       back: () => set((s) => ({ step: Math.max(s.step - 1, 0), direction: -1 })),
       goTo: (step) =>
         set((s) => ({ step, direction: step >= s.step ? 1 : -1 })),
-      reset: () => set({ ...initialDraft }),
+
+      setService: (serviceId) => set({ serviceId }),
+      setBarber: (barberId) => set({ barberId }),
+      setDate: (date) => set({ date, time: undefined }),
+      setTime: (time) => set({ time }),
+      setContact: (contact) => set((s) => ({ contact: { ...s.contact, ...contact } })),
+
       submit: () => {
         const s = get()
         const record: BookingRecord = {
-          id: `bk_${Date.now()}`,
           serviceId: s.serviceId!,
           barberId: s.barberId!,
           date: s.date!,
@@ -68,21 +71,29 @@ export const useBookingStore = create<BookingState>()(
           contact: s.contact,
           createdAt: new Date().toISOString(),
         }
-        saveBooking(record)
-        set({ lastConfirmed: record, step: STEP_COUNT - 1, direction: 1 })
+        try {
+          const raw = localStorage.getItem(BOOKINGS_KEY)
+          const existing: BookingRecord[] = raw ? JSON.parse(raw) : []
+          localStorage.setItem(BOOKINGS_KEY, JSON.stringify([...existing, record]))
+        } catch {
+          // localStorage no disponible: la reserva sigue confirmándose en memoria
+        }
+        set({ confirmedRecord: record })
         return record
       },
+
+      reset: () =>
+        set({
+          step: 0,
+          direction: 1,
+          serviceId: undefined,
+          barberId: undefined,
+          date: undefined,
+          time: undefined,
+          contact: emptyContact,
+          confirmedRecord: undefined,
+        }),
     }),
-    {
-      name: 'peluqueria-booking-draft',
-      partialize: (s) => ({
-        step: s.step,
-        serviceId: s.serviceId,
-        barberId: s.barberId,
-        date: s.date,
-        time: s.time,
-        contact: s.contact,
-      }),
-    },
+    { name: 'peluqueria-booking-draft' },
   ),
 )

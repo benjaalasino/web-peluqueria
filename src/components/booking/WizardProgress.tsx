@@ -1,25 +1,22 @@
-import { STEP_COUNT } from '@/store/bookingStore'
-import { cn } from '@/lib/utils'
+import { ChevronLeft } from 'lucide-react'
+import { ProgressBar } from '@/components/ui/ProgressBar'
+import { useBookingStore } from '@/store/bookingStore'
 
-const LABELS = ['Servicio', 'Barbero', 'Fecha', 'Hora', 'Datos', 'Listo']
+export function WizardProgress() {
+  const step = useBookingStore((s) => s.step)
+  const back = useBookingStore((s) => s.back)
 
-export function WizardProgress({ step }: { step: number }) {
   return (
-    <div className="mb-10">
-      <div className="flex h-1 gap-1.5 overflow-hidden rounded-full bg-bone-dim/10">
-        {Array.from({ length: STEP_COUNT }).map((_, i) => (
-          <div
-            key={i}
-            className={cn(
-              'h-full flex-1 rounded-full transition-colors duration-300',
-              i <= step ? 'bg-gold' : 'bg-transparent',
-            )}
-          />
-        ))}
-      </div>
-      <p className="mt-3 font-body text-xs font-semibold tracking-[0.25em] text-gold uppercase">
-        {LABELS[step]}
-      </p>
+    <div className="flex items-center gap-4">
+      <button
+        onClick={back}
+        disabled={step === 0}
+        aria-label="Volver"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/60 transition-colors hover:border-gold-500/40 hover:text-gold-300 disabled:opacity-0"
+      >
+        <ChevronLeft size={18} />
+      </button>
+      <ProgressBar step={step} />
     </div>
   )
 }

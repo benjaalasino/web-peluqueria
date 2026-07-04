@@ -3,31 +3,29 @@ export interface Barber {
   name: string
   role: string
   bio: string
+  initials: string
 }
 
 export const barbers: Barber[] = [
   {
     id: 'lucas',
     name: 'Lucas Ferreyra',
-    role: 'Fundador · Barbero senior',
-    bio: 'Más de 12 años de oficio, especialista en cortes clásicos y afeitado a navaja.',
+    role: 'Fundador · Master barber',
+    bio: '15 años de oficio, especialista en cortes clásicos y afeitado a navaja.',
+    initials: 'LF',
   },
   {
     id: 'martina',
     name: 'Martina Sosa',
     role: 'Colorista',
-    bio: 'Referente en color, mechas y disimulo de canas.',
+    bio: 'Especialista en color, mechas y tratamientos capilares.',
+    initials: 'MS',
   },
   {
-    id: 'facundo',
-    name: 'Facundo Ríos',
-    role: 'Barbero',
-    bio: 'Especialista en fades y diseños de líneas.',
-  },
-  {
-    id: 'agustina',
-    name: 'Agustina Paz',
-    role: 'Estilista',
-    bio: 'Cortes modernos y asesoramiento de imagen personalizado.',
+    id: 'nico',
+    name: 'Nicolás Paz',
+    role: 'Barber stylist',
+    bio: 'Cortes modernos, degradados y diseño de barba.',
+    initials: 'NP',
   },
 ]

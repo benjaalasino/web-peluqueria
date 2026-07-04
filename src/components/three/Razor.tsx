@@ -1,55 +1,51 @@
 import { useMemo, forwardRef } from 'react'
 import * as THREE from 'three'
 
-function buildBladeGeometry() {
-  const length = 1.9
-  const width = 0.34
+function buildBladeShape() {
   const shape = new THREE.Shape()
-  shape.moveTo(0, 0)
-  shape.lineTo(length * 0.82, width * 0.06)
-  shape.lineTo(length, -width * 0.42)
-  shape.lineTo(length * 0.82, -width)
-  shape.lineTo(0, -width * 0.94)
+  shape.moveTo(0, 0.16)
+  shape.lineTo(1.8, 0.1)
+  shape.quadraticCurveTo(2.15, 0.02, 1.8, -0.14)
+  shape.lineTo(0, -0.1)
   shape.closePath()
-
-  const geometry = new THREE.ExtrudeGeometry(shape, {
-    depth: 0.05,
-    bevelEnabled: true,
-    bevelThickness: 0.012,
-    bevelSize: 0.012,
-    bevelSegments: 3,
-    curveSegments: 8,
-  })
-  geometry.center()
-  return geometry
-}
-
-function buildHandleGeometry() {
-  return new THREE.CylinderGeometry(0.095, 0.14, 1.7, 32, 1)
+  return shape
 }
 
 export const Razor = forwardRef<THREE.Group>(function Razor(_props, ref) {
-  const bladeGeometry = useMemo(() => buildBladeGeometry(), [])
-  const handleGeometry = useMemo(() => buildHandleGeometry(), [])
+  const bladeGeometry = useMemo(() => {
+    const shape = buildBladeShape()
+    return new THREE.ExtrudeGeometry(shape, { depth: 0.03, bevelEnabled: true, bevelSize: 0.01, bevelThickness: 0.01, bevelSegments: 2 })
+  }, [])
 
   return (
-    <group ref={ref} rotation={[0, 0, THREE.MathUtils.degToRad(-18)]}>
-      <mesh geometry={bladeGeometry} position={[1.05, 0.1, 0]} castShadow={false}>
-        <meshPhysicalMaterial
-          color="#e8c968"
-          metalness={1}
-          roughness={0.18}
-          clearcoat={0.6}
-          clearcoatRoughness={0.15}
-        />
+    <group ref={ref} position={[1.35, -1.1, -0.3]} rotation={[0, 0.2, -0.42]} scale={0.62}>
+      {/* mango */}
+      <mesh position={[-1.05, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow={false}>
+        <cylinderGeometry args={[0.16, 0.13, 1.5, 24]} />
+        <meshStandardMaterial color="#0d0d0d" roughness={0.55} metalness={0.3} />
       </mesh>
-      <mesh geometry={handleGeometry} position={[-0.75, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <meshStandardMaterial color="#1a1613" metalness={0.15} roughness={0.55} />
+      <mesh position={[-1.05, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.165, 0.165, 0.06, 24]} />
+        <meshStandardMaterial color="#c9a227" roughness={0.3} metalness={0.8} />
       </mesh>
-      <mesh position={[-1.55, 0, 0]}>
-        <sphereGeometry args={[0.1, 16, 16]} />
-        <meshStandardMaterial color="#1a1613" metalness={0.15} roughness={0.55} />
-      </mesh>
+
+      {/* hoja */}
+      <group position={[-0.25, 0, 0]}>
+        <mesh geometry={bladeGeometry}>
+          <meshStandardMaterial color="#c7c7cf" roughness={0.22} metalness={0.95} />
+        </mesh>
+        {/* filo dorado */}
+        <mesh position={[0.9, -0.12, 0.015]}>
+          <boxGeometry args={[1.8, 0.015, 0.02]} />
+          <meshStandardMaterial
+            color="#e9d18b"
+            emissive="#c9a227"
+            emissiveIntensity={0.6}
+            roughness={0.15}
+            metalness={1}
+          />
+        </mesh>
+      </group>
     </group>
   )
 })

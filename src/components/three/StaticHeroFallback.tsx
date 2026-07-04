@@ -2,7 +2,11 @@ export function StaticHeroFallback() {
   return (
     <div
       aria-hidden
-      className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_60%_30%,rgba(232,201,104,0.16),transparent_65%)]"
+      className="absolute inset-0"
+      style={{
+        background:
+          'radial-gradient(45% 40% at 65% 45%, rgba(201,162,39,0.22), transparent 70%), radial-gradient(60% 50% at 30% 55%, rgba(20,15,10,0.9), transparent 70%)',
+      }}
     />
   )
 }

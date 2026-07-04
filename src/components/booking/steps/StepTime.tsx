@@ -1,8 +1,7 @@
-import { useMemo } from 'react'
 import { motion } from 'motion/react'
-import { cn } from '@/lib/utils'
 import { getAvailableSlots } from '@/data/availability'
 import { useBookingStore } from '@/store/bookingStore'
+import { cn } from '@/lib/utils'
 
 export function StepTime() {
   const barberId = useBookingStore((s) => s.barberId)
@@ -11,40 +10,38 @@ export function StepTime() {
   const setTime = useBookingStore((s) => s.setTime)
   const next = useBookingStore((s) => s.next)
 
-  const slots = useMemo(
-    () => (barberId && date ? getAvailableSlots(barberId, date) : []),
-    [barberId, date],
-  )
-
-  if (slots.length === 0) {
-    return (
-      <p className="rounded-xl border border-bone-dim/15 bg-ink-raised p-6 text-center font-body text-bone-dim">
-        No quedan horarios disponibles ese día. Volvé atrás y elegí otra fecha.
-      </p>
-    )
-  }
+  const slots = barberId && date ? getAvailableSlots(barberId, date) : []
 
   return (
-    <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-      {slots.map((slot) => (
-        <motion.button
-          key={slot}
-          type="button"
-          whileTap={{ scale: 0.96 }}
-          onClick={() => {
-            setTime(slot)
-            next()
-          }}
-          className={cn(
-            'rounded-xl border px-3 py-3 text-center font-body text-sm font-medium transition-colors',
-            time === slot
-              ? 'border-gold bg-gold/10 text-gold'
-              : 'border-bone-dim/15 bg-ink-raised text-bone hover:border-gold/40',
-          )}
-        >
-          {slot}
-        </motion.button>
-      ))}
+    <div>
+      <h3 className="font-display text-3xl tracking-wide text-white">Elegí un horario</h3>
+      {slots.length === 0 ? (
+        <p className="mt-8 text-sm text-white/50">
+          No hay horarios disponibles ese día. Volvé atrás y elegí otra fecha.
+        </p>
+      ) : (
+        <div className="mt-8 grid grid-cols-3 gap-3 sm:grid-cols-5">
+          {slots.map((slot) => (
+            <motion.button
+              key={slot}
+              onClick={() => {
+                setTime(slot)
+                next()
+              }}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.96 }}
+              className={cn(
+                'rounded-lg border px-3 py-2 font-display text-lg tracking-wide transition-colors',
+                time === slot
+                  ? 'border-gold-500 bg-gold-500/10 text-gold-300'
+                  : 'border-white/10 bg-ink-800 text-white/80 hover:border-gold-500/40',
+              )}
+            >
+              {slot}
+            </motion.button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

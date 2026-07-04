@@ -1,42 +1,37 @@
+import type { ReactNode } from 'react'
+import type { HTMLMotionProps } from 'motion/react'
 import { motion } from 'motion/react'
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { useMagneticButton } from '@/hooks/useMagneticButton'
 import { cn } from '@/lib/utils'
-import { prefersReducedMotion } from '@/lib/reducedMotion'
 
-type NativeButtonProps = Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  'onAnimationStart' | 'onAnimationEnd' | 'onDrag' | 'onDragStart' | 'onDragEnd'
->
-
-interface ButtonProps extends NativeButtonProps {
-  children: ReactNode
+interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
   variant?: 'primary' | 'ghost'
+  children: ReactNode
 }
 
-export function Button({ children, variant = 'primary', className, ...props }: ButtonProps) {
-  const magnetic = useMagneticButton(prefersReducedMotion())
+export function Button({ variant = 'primary', className, children, ...props }: ButtonProps) {
+  const { ref, springX, springY, handlePointerMove, handlePointerLeave } = useMagneticButton()
 
   return (
     <motion.button
-      ref={magnetic.ref}
-      style={magnetic.style}
-      onMouseMove={magnetic.onMouseMove}
-      onMouseLeave={magnetic.onMouseLeave}
-      whileTap={{ scale: 0.96 }}
+      ref={ref as React.Ref<HTMLButtonElement>}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      style={{ x: springX, y: springY }}
       className={cn(
-        'group relative isolate overflow-hidden rounded-full px-8 py-3.5 font-body text-sm font-medium tracking-wide uppercase transition-colors',
-        variant === 'primary' && 'bg-gold text-ink hover:bg-gold-bright',
-        variant === 'ghost' && 'border border-bone-dim/30 text-bone hover:border-gold/60 hover:text-gold',
+        'group relative isolate overflow-hidden rounded-full px-8 py-4 font-display text-lg tracking-wide uppercase transition-colors',
+        variant === 'primary'
+          ? 'bg-gold-500 text-ink-950 hover:bg-gold-400'
+          : 'border border-gold-500/40 text-gold-300 hover:border-gold-400',
         className,
       )}
       {...props}
     >
-      <span className="relative z-10">{children}</span>
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-0 bg-[linear-gradient(110deg,transparent_40%,rgba(255,255,255,0.5)_50%,transparent_60%)] bg-[length:200%_100%] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:animate-shine"
+        className="pointer-events-none absolute inset-0 -z-0 bg-[linear-gradient(120deg,transparent_20%,rgba(255,255,255,0.55)_50%,transparent_80%)] bg-[length:250%_100%] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:animate-shine"
       />
+      <span className="relative z-10">{children}</span>
     </motion.button>
   )
 }

@@ -1,13 +1,13 @@
 export interface GalleryItem {
   id: string
-  caption: string
+  label: string
 }
 
 export const gallery: GalleryItem[] = [
-  { id: 'g1', caption: 'Fade clásico' },
-  { id: 'g2', caption: 'Barba perfilada' },
-  { id: 'g3', caption: 'Afeitado a navaja' },
-  { id: 'g4', caption: 'Diseño de líneas' },
-  { id: 'g5', caption: 'Color y canas' },
-  { id: 'g6', caption: 'Ambiente del salón' },
+  { id: 'g1', label: 'Fade clásico' },
+  { id: 'g2', label: 'Afeitado a navaja' },
+  { id: 'g3', label: 'Barba diseñada' },
+  { id: 'g4', label: 'Corte texturizado' },
+  { id: 'g5', label: 'Color platinado' },
+  { id: 'g6', label: 'Pompadour moderno' },
 ]

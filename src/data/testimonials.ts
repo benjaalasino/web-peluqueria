@@ -1,6 +1,6 @@
 export interface Testimonial {
   id: string
-  author: string
+  name: string
   quote: string
   rating: number
 }
@@ -8,20 +8,20 @@ export interface Testimonial {
 export const testimonials: Testimonial[] = [
   {
     id: 't1',
-    author: 'Nicolás D.',
-    quote: 'El mejor corte que me hice en años. La atención y el ambiente son otro nivel.',
+    name: 'Julián R.',
+    quote: 'El mejor corte que me hice en años. La atención al detalle se nota desde que entrás.',
     rating: 5,
   },
   {
     id: 't2',
-    author: 'Rodrigo M.',
-    quote: 'Reservar el turno fue rapidísimo y llegué sin esperar nada. Volví a las dos semanas.',
+    name: 'Bruno M.',
+    quote: 'El afeitado a navaja es una experiencia aparte. Volví tres veces en un mes.',
     rating: 5,
   },
   {
     id: 't3',
-    author: 'Bruno S.',
-    quote: 'El afeitado a navaja es una experiencia. Se nota el detalle en cada paso.',
+    name: 'Ezequiel D.',
+    quote: 'Reservar el turno online fue rapidísimo y llegaron los recordatorios a tiempo.',
     rating: 5,
   },
 ]
