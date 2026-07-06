@@ -7,7 +7,7 @@ import { useGSAP } from "@gsap/react";
 import HeroFrame from "./HeroFrame";
 import ScheduleFrame from "./ScheduleFrame";
 import PenaltyFrame from "./PenaltyFrame";
-import SpeedStreaks from "./SpeedStreaks";
+import GrassRush from "./GrassRush";
 import SuccessModal from "./SuccessModal";
 import type { Frame, TimeSlot } from "@/lib/booking";
 
@@ -53,22 +53,29 @@ export default function BookingExperience() {
     { scope: root },
   );
 
-  /** Ráfaga de velocidad: líneas de tiza barriendo la pantalla mientras
-   *  la cámara "corre" por el pasto, para vender la sensación de vértigo. */
+  /** Ráfaga de velocidad: pasto REAL con motion blur (cosechado del video
+   *  del penal) barre la pantalla en dos capas parallax mientras la cámara
+   *  "corre" a ras del césped. */
   const addStreaks = (tl: gsap.core.Timeline, at: number) => {
-    tl.set(streaksRef.current, { autoAlpha: 1 }, at)
+    tl.fromTo(
+      streaksRef.current,
+      { autoAlpha: 0 },
+      { autoAlpha: 1, duration: 0.16, ease: "power1.in" },
+      at,
+    )
       .fromTo(
-        ".streak",
-        { yPercent: -160 },
-        {
-          yPercent: 160,
-          duration: 0.75,
-          ease: "none",
-          stagger: 0.045,
-        },
+        ".rush-far",
+        { yPercent: -26, scale: 1 },
+        { yPercent: 24, scale: 1.08, duration: 0.85, ease: "none" },
         at,
       )
-      .to(streaksRef.current, { autoAlpha: 0, duration: 0.3 }, at + 0.6);
+      .fromTo(
+        ".rush-near",
+        { yPercent: -42, scale: 1.15 },
+        { yPercent: 38, scale: 1.3, duration: 0.85, ease: "none" },
+        at,
+      )
+      .to(streaksRef.current, { autoAlpha: 0, duration: 0.3 }, at + 0.58);
   };
 
   /** FRAME 1 → FRAME 2: zoom continuo hacia el centro de la cancha. */
@@ -272,7 +279,7 @@ export default function BookingExperience() {
       />
 
       {/* Overlay de velocidad para las transiciones */}
-      <SpeedStreaks ref={streaksRef} />
+      <GrassRush ref={streaksRef} />
 
       {/* Modal de éxito */}
       {isConfirmed && (
