@@ -7,5 +7,6 @@ export type TimeSlot = (typeof TIME_SLOTS)[number];
 export const ASSETS = {
   fieldFull: "/images/field-full.jpg",
   fieldCenter: "/images/field-center.jpg",
+  grassRush: "/images/grass-rush.jpg",
   penaltyVideo: "/videos/penalty.mp4",
 } as const;
