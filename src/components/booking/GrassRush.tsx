@@ -4,10 +4,14 @@ import { forwardRef } from "react";
 import { ASSETS } from "@/lib/booking";
 
 /**
- * Overlay de "vuelo rasante": dos capas de pasto REAL con motion blur
- * (extraído del propio video del penal) que barren la pantalla a distintas
- * velocidades durante los zooms, como césped pasando pegado al lente.
- * GSAP solo anima yPercent/scale/opacity de cada capa → 60fps.
+ * Overlay de "cámara pegada al piso": dos capas de pasto REAL con motion
+ * blur (extraído del propio video del penal) que se deslizan por la
+ * pantalla como el césped pasando bajo una cámara que viaja a ras de
+ * suelo de un punto a otro — no un túnel que se atraviesa, sino el piso
+ * corriendo por debajo del lente. Las capas se mueven a distinta
+ * velocidad vertical Y horizontal (motion parallax) para vender que la
+ * cámara se desplaza hacia adelante y hacia un costado, no hacia adentro.
+ * GSAP solo anima x/yPercent/scale/opacity de cada capa → 60fps.
  */
 const GrassRush = forwardRef<HTMLDivElement>(function GrassRush(_, ref) {
   return (
@@ -16,30 +20,31 @@ const GrassRush = forwardRef<HTMLDivElement>(function GrassRush(_, ref) {
       aria-hidden
       className="pointer-events-none absolute inset-0 z-40 overflow-hidden"
     >
-      {/* capa lejana: más lenta y tenue */}
+      {/* capa lejana: más lenta y tenue, deriva sutil */}
       <div
-        className="rush-far gpu-layer absolute -left-[10%] w-[120%] opacity-80"
+        className="rush-far gpu-layer absolute -left-[15%] w-[130%] opacity-70"
         style={{
-          top: "-100%",
-          height: "300%",
+          top: "-60%",
+          height: "220%",
           backgroundImage: `url(${ASSETS.grassRush})`,
           backgroundSize: "100% auto",
           backgroundRepeat: "repeat-y",
         }}
       />
-      {/* capa cercana: más rápida, más grande y más presente */}
+      {/* capa cercana: mucho más rápida y grande, como pasto pegado al lente */}
       <div
-        className="rush-near gpu-layer absolute -left-[25%] w-[150%]"
+        className="rush-near gpu-layer absolute -left-[35%] w-[170%]"
         style={{
-          top: "-100%",
-          height: "300%",
+          top: "-60%",
+          height: "220%",
           backgroundImage: `url(${ASSETS.grassRush})`,
           backgroundSize: "100% auto",
           backgroundRepeat: "repeat-y",
         }}
       />
-      {/* sombra de túnel en los bordes para profundidad */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(4,16,7,0.55)_100%)]" />
+      {/* motion blur direccional: oscurece arriba/abajo, deja el centro
+          (línea de la mirada) limpio, en vez de un túnel radial */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(4,16,7,0.5)_0%,transparent_30%,transparent_70%,rgba(4,16,7,0.5)_100%)]" />
     </div>
   );
 });
